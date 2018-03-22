@@ -9,32 +9,32 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { SharedModuleModule } from '../../sharedModule/shared-module.module';
 // import { SharedModuleModule } from './shared-module/shared-module.module';
 import { UpgradeComponent, UpgradeModule } from '@angular/upgrade/static';
-// import { Ng1TestDirective } from './ng1-test.directive';
+import { Ng1TestDirective } from './ng1-test.directive';
 import AppModuleAngularJS from './angularJs';
 
 @NgModule({
   declarations: [
     AppComponent,
-    // Ng1TestDirective,
+    Ng1TestDirective,
   ],
   imports: [
     BrowserModule,
     UpgradeModule,
     SharedModuleModule,
-    
   ],
-  providers: [],
+  providers: [
+      { provide: '$scope', useExisting: '$rootScope' }
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { 
-  constructor(private upgrade: UpgradeModule) {
-     
-    
-  }
-  ngDoBootstrap() { /* this is a placeholder to stop the bootstrapper from complaining */
-    // this.upgrade.bootstrap(document.documentElement, [AppModuleAngularJS.name]);
-  }
+export class AppModule {
+    constructor(private upgrade: UpgradeModule) {
+        this.upgrade.bootstrap(document.documentElement, [AppModuleAngularJS.name]);
+    }
+  // ngDoBootstrap() { /* this is a placeholder to stop the bootstrapper from complaining */
+  //   // this.upgrade.bootstrap(document.documentElement, [AppModuleAngularJS.name]);
+  // }
 }

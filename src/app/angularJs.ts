@@ -1,5 +1,8 @@
 // External dependencies
-import * as angular from "angular";
+import * as angular from 'angular';
+import { setAngularLib } from '@angular/upgrade/static';
+
+setAngularLib(angular);
 
 // Create the angular 1 module "demo".
 //
@@ -12,9 +15,29 @@ AppModuleAngularJS.component('ng1Hero', {
     bindings: {hero: '<', onRemove: '&'},
     transclude: true,
     template: `<div class="title" ng-transclude></div>
-               <h2>{{ $ctrl.hero.name }}</h2>
+               <h2>{{ $ctrl.hero.name }} {{hero}}</h2>
                <p>{{ $ctrl.hero.description }}</p>
-               <button ng-click="$ctrl.onRemove()">Remove</button> <p>some</p>`
-  });
+               <p>{{ $ctrl.example }}</p>
+               <h2>РАБОТАЕТ!</h2>
+               <button ng-click="$ctrl.onRemovSmth()" mat-raised-button>Remove</button> <p>some</p>
+               <button ng-click="onRemove()" mat-raised-button>Remove</button> <p>some</p>
+               <p>{{$ctrl | json}}</p>
+`,
+    controller: () => {
+
+        return {
+
+            example: 'example',
+            onRemove: () => {
+
+                console.log('onRemove', this);
+            },
+            onRemovSmth: () => {
+                console.log('onRemove', this);
+            }
+        }
+    },
+    controllerAs: '$ctrl'
+});
 
 export default AppModuleAngularJS;
