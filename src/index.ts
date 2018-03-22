@@ -1,1 +1,1 @@
-import {SharedModuleModule} from './app/shared-module/shared-module.module';
+import {SharedModuleModule} from '../sharedModule/shared-module.module';

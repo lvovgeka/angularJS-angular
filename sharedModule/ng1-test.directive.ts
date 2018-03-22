@@ -19,11 +19,23 @@ OnDestroy {
 
   // For this class to work when compiled with AoT, we must implement these lifecycle hooks
   // because the AoT compiler will not realise that the super class implements them
-  ngOnInit() { super.ngOnInit(); }
+  ngOnInit() {
+      console.log('ngOnInit');
+    super.ngOnInit();
+  }
 
-  ngOnChanges(changes: SimpleChanges) { super.ngOnChanges(changes); }
+  ngOnChanges(changes: SimpleChanges) {
+      console.log('ngOnChanges', changes);
+    super.ngOnChanges(changes);
+  }
 
-  ngDoCheck() { super.ngDoCheck(); }
+  ngDoCheck() {
+      console.log('ngDoCheck', this);
+    super.ngDoCheck();
+  }
 
-  ngOnDestroy() { super.ngOnDestroy(); }
+  ngOnDestroy() {
+    console.log('ngOnDestroy');
+    super.ngOnDestroy();
+  }
 }
