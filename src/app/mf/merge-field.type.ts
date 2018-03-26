@@ -1,26 +1,37 @@
-import { StringComponent } from "../string/string.component";
-import { DateComponent } from "../date/date.component";
+import { StringComponent } from '../string/string.component';
+import { DateComponent } from '../date/date.component';
+import {NumberComponent} from '../number/number.component';
+import {SignComponent} from '../sign/sign.component';
 
 export class MergeField {
     name: string;
     type: string;
-    maxLenght?: string;
-
-    component = StringComponent;
+    maxLength?: string;
+    value: any = null;
 
     public getComponent() {
 
-        console.log('getComponent', this.type)
-        switch(this.type) {
+        switch (this.type) {
             case 'string':
-            console.log('getComponent', this.type)
                 return StringComponent;
             case 'date':
-            console.log('getComponent', this.type)
                 return DateComponent;
+            case 'number':
+                return NumberComponent;
+            case 'sign':
+                return SignComponent;
         }
 
         throw new Error('Unknown type: ' + this.type);
+    }
+
+    public covertToComponentData() {
+        return {
+            name: this.name,
+            type: this.type,
+            maxLength: this.maxLength,
+            value: this.value,
+        };
     }
 }
 

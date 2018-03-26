@@ -1,0 +1,10 @@
+<h3>document-fill component</h3>
+
+<div *ngIf="mergeFieldPack">
+
+  <div *ngFor="let page of document.template.templatePages">
+
+    <app-page-fill [page]="page" [mergeFieldPack]="mergeFieldPack"></app-page-fill>
+  </div>
+
+</div>

@@ -4,6 +4,9 @@ import {StringComponent} from "./string/string.component";
 import {DateComponent} from "./date/date.component";
 import { HtmlType } from './mf/html.type';
 import { MergeFieldType, MergeField } from './mf/merge-field.type';
+import {Document} from './model/document';
+import {Template} from './model/template';
+import {TemplatePage} from './model/template-page';
 
 @Component({
   selector: 'app-root',
@@ -11,20 +14,22 @@ import { MergeFieldType, MergeField } from './mf/merge-field.type';
    template: `
        <h1>APP</h1>
        <hr>
-
-       <button (click)="addDynamicComponent()">add</button>
-       <div id="container">
-           <h1>My Component</h1>
-           
-           <div id="data" #one></div>
-       </div>
+       <app-document-fill [document]="document"></app-document-fill>
+       <!--<button (click)="addDynamicComponent()">add</button>-->
+       <!--<div id="container">-->
+           <!--<h1>My Component</h1>-->
+           <!---->
+           <!--<div id="data" #one></div>-->
+       <!--</div>-->
 
    `,
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
 
-    @ViewChild('one') d1:ElementRef;
+    @ViewChild('one') d1: ElementRef;
+
+    document: Document;
 
     constructor(private resolver: ComponentFactoryResolver,
                 private injector: Injector,
@@ -32,9 +37,86 @@ export class AppComponent {
 
     ) {
 
+        const document = Object.assign(
+            new Document(),
+            {
+                id: 1,
+                status: 0,
+                mergeFields: [
+                    {name: 'company_name', type: 'string', maxLength: 100, value: 'Apple'},
+                    {name: 'house', type: 'number', maxLength: 55},
+                    {name: 'date_sign', type: 'date', value: '12-12-2017'},
+                    {name: 'sign', type: 'sign'}
+                ]
+            }
+        );
+
+        const template = Object.assign(
+            new Template(),
+            {
+                id: 1,
+                status: 1,
+            }
+        );
+
+        const templatePages = [];
+
+        for (let i = 1; i < 3; i++) {
+            templatePages.push(
+                Object.assign(
+                    new TemplatePage(),
+                    {
+                        id: i,
+                        body: this.getPage(i - 1)
+                    }
+                )
+            );
+        }
+
+        template.templatePages = templatePages;
+
+        document.template = template;
+
+        this.document = document;
+
     }
 
-    pattern: '{{name: company_name | type: string}}';
+    getPage(n){
+        const pages = [
+            `
+                    <h1>Page 1</h1>
+                    <merge-fields>{{name: company_name | type: string}}</merge-fields> 
+                    <p>some text in p 1</p>  
+                    <merge-fields>{{name: date_sign | type: date}}</merge-fields>
+                    <p>some 2 text in p 1</p> 
+            `,
+            `        
+                    <h1>Page 2</h1>
+                    <merge-fields>{{name: house | type: number}}</merge-fields> 
+                    <p>some text in p 2</p>  
+                    <merge-fields>{{name: sign | type: sign}}</merge-fields>
+                    <p>some 2 text in p 2</p> 
+            `,
+        ];
+
+        return pages[n];
+    }
+
+    mergeFileds: [
+        {name: 'company_name', type: 'string', maxLength: 100},
+        {name: 'house', type: 'number', maxLength: 55},
+        {name: 'date_sign', type: 'date'},
+        {name: 'sign', type: 'sign'}
+    ];
+
+    mergeFiledsFromDocument: [
+        {name: 'company_name', type: 'string', maxLength: 100, value: 'Apple'},
+        {name: 'house', type: 'number', maxLength: 55},
+        {name: 'date_sign', type: 'date', value: '12-12-2017'},
+        {name: 'sign', type: 'sign'}
+    ];
+
+
     html = `
         <merge-fields>{{name: company_name | type: string}}</merge-fields> 
         <p>some text in p</p> 
@@ -59,7 +141,8 @@ export class AppComponent {
         let htmls = []; 
         let tmlString;
         let result;
-        let i = 0; 
+        let i = 0;
+
         do {
             result = html.match(/\<merge-fields\>.+\<\/merge-fields\>/i);
             
@@ -109,16 +192,14 @@ export class AppComponent {
                 }
 
                 if (el instanceof MergeFieldType) {
-                    this.attechComponent(el.mf.getComponent())
+                    this.attachComponent(el.mf.getComponent());
                 }
   
             }
         ); 
     }
 
-    private attechComponent(componentName) {
-
-        console.log('componentName', componentName)
+    private attachComponent(componentName) {
 
         const factoryComponent = this.resolver.resolveComponentFactory(componentName);
         const newNode = document.createElement('div');
